@@ -19,59 +19,59 @@ public partial class TaskQueueViewModel : ObservableObject, IRecipient<TaskDelet
     [ObservableProperty] private ObservableCollection<TaskViewModel> _tasks;
 
     [ObservableProperty] private TaskViewModel? _selectedTask;
+    
+    [ObservableProperty] private TaskViewModel? _newTask;
 
-    public bool CanAddTask => Tasks.Count == 0 || Tasks[0].Initialised;
+    public bool CanAddTask => NewTask is null;
 
     public TaskQueueViewModel()
     {
         WeakReferenceMessenger.Default.Register(this);
-        _tasks = new ObservableCollection<TaskViewModel>(
+        _tasks = InitializeTaskCollection();
+    }
+
+    private ObservableCollection<TaskViewModel> InitializeTaskCollection()
+    {
+        return new ObservableCollection<TaskViewModel>(
             _context.Tasks
                 .OrderByDescending(t => t.Created)
                 .Select(s =>
-            new TaskViewModel
-            {
-                Initialised = true,
-                Id = s.Id,
-                Title = s.Title,
-            }));
+                    new TaskViewModel
+                    {
+                        Initialised = true,
+                        Id = s.Id,
+                        Title = s.Title,
+                    }));
     }
 
     partial void OnSelectedTaskChanged(TaskViewModel? value)
     {
-        // User entering space on the edit causes selection to change. Check initialization to be sure.
-        if (value is not { Initialised: true })
-        {
-            WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(null));
-            return;
-        }
-        
-        WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(value!.Id));
+        WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(value?.Id));
     }
 
     [RelayCommand(CanExecute = nameof(CanAddTask))]
     private Task AddTaskAsync()
     {
-        Tasks.Insert(0, new TaskViewModel());
+        NewTask = new TaskViewModel();
         return Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task TaskInitialised(TaskViewModel task)
+    private async Task TaskCreated(TaskViewModel task)
     {
         if (string.IsNullOrWhiteSpace(task.Title))
         {
-            Tasks.RemoveAt(0);
             AddTaskCommand.NotifyCanExecuteChanged();
             return;
         }
 
         await PersistCreatedTask(task);
 
-        // Set to trigger collection update
-        Tasks[0] = task;
+        Tasks.Insert(0, task);
+        NewTask = null;
 
         AddTaskCommand.NotifyCanExecuteChanged();
+        SelectedTask = task;
     }
 
     private async Task PersistCreatedTask(TaskViewModel task)

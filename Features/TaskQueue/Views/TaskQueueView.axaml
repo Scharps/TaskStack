@@ -11,7 +11,7 @@
     <UserControl.DataContext>
         <viewModels:TaskQueueViewModel />
     </UserControl.DataContext>
-    <Grid RowDefinitions="50, *">
+    <Grid RowDefinitions="50, Auto, *">
         <Button
             Content="Add"
             HorizontalContentAlignment="Center"
@@ -19,21 +19,15 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Command="{Binding AddTaskCommand}" />
-        <ListBox SelectionMode="AlwaysSelected" Grid.Row="1" SelectedItem="{Binding SelectedTask}" ItemsSource="{Binding Tasks}">
+        <views:TaskEditView Grid.Row="1" IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}"
+                            DataContext="{Binding NewTask}"
+                            SaveCommand="{Binding $parent[views:TaskQueueView].((viewModels:TaskQueueViewModel)DataContext).TaskCreatedCommand}"/>
+        <ListBox SelectionMode="AlwaysSelected" Grid.Row="2" SelectedItem="{Binding SelectedTask}"
+                 ItemsSource="{Binding Tasks}">
             <ListBox.ItemTemplate>
-                <templateSelectors:TaskTemplateSelector>
-                    <templateSelectors:TaskTemplateSelector.DefaultTemplate>
-                        <DataTemplate DataType="viewModels:TaskViewModel">
-                            <views:TaskView DataContext="{Binding}" />
-                        </DataTemplate>
-                    </templateSelectors:TaskTemplateSelector.DefaultTemplate>
-                    <templateSelectors:TaskTemplateSelector.EditTemplate>
-                        <DataTemplate DataType="viewModels:TaskViewModel">
-                            <views:TaskEditView DataContext="{Binding}"
-                                                SaveCommand="{Binding $parent[views:TaskQueueView].((viewModels:TaskQueueViewModel)DataContext).TaskInitialisedCommand, FallbackValue={x:Null}}" />
-                        </DataTemplate>
-                    </templateSelectors:TaskTemplateSelector.EditTemplate>
-                </templateSelectors:TaskTemplateSelector>
+                <DataTemplate DataType="viewModels:TaskViewModel">
+                    <views:TaskView DataContext="{Binding}" />
+                </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
     </Grid>

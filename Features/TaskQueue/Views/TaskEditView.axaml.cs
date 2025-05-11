@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using TaskStack.Features.TaskQueue.ViewModels;
 
 namespace TaskStack.Features.TaskQueue.Views;
 
@@ -14,15 +13,9 @@ public partial class TaskEditView : UserControl
         InitializeComponent();
     }
 
-    private void Control_OnLoaded(object? sender, RoutedEventArgs e)
-    {
-        TitleTextBox.Focus();
-    }
-
     private void TitleTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
     {
-        // Ignore if the task has been initialized.
-        if (DataContext is TaskViewModel { Initialised: true }) return;
+        if (DataContext is null) return;
         
         SaveCommand?.Execute(DataContext);
     }
