@@ -49,6 +49,11 @@ public partial class TaskQueueViewModel : ObservableObject, IRecipient<TaskDelet
         WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(value?.Id));
     }
 
+    partial void OnNewTaskChanged(TaskViewModel? value)
+    {
+        AddTaskCommand.NotifyCanExecuteChanged();
+    }
+
     [RelayCommand(CanExecute = nameof(CanAddTask))]
     private Task AddTaskAsync()
     {
@@ -61,7 +66,7 @@ public partial class TaskQueueViewModel : ObservableObject, IRecipient<TaskDelet
     {
         if (string.IsNullOrWhiteSpace(task.Title))
         {
-            AddTaskCommand.NotifyCanExecuteChanged();
+            NewTask = null;
             return;
         }
 
@@ -70,7 +75,6 @@ public partial class TaskQueueViewModel : ObservableObject, IRecipient<TaskDelet
         Tasks.Insert(0, task);
         NewTask = null;
 
-        AddTaskCommand.NotifyCanExecuteChanged();
         SelectedTask = task;
     }
 

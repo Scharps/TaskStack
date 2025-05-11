@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -35,5 +36,12 @@ public partial class TaskEditView : UserControl
     {
         get => GetValue(SaveCommandProperty);
         set => SetValue(SaveCommandProperty, value);
+    }
+
+    private void StyledElement_OnDataContextChanged(object? sender, EventArgs e)
+    {
+        if(DataContext is null) return;
+
+        TitleTextBox.Focus();
     }
 }
