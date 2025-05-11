@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace TaskStack.Features.TaskQueue.Views;
 
@@ -14,6 +15,20 @@ public partial class TaskEditView : UserControl
         InitializeComponent();
     }
 
+    static TaskEditView()
+    {
+        IsVisibleProperty.Changed.AddClassHandler<TaskEditView>(OnIsVisibleChanged);
+    }
+
+    private static void OnIsVisibleChanged(TaskEditView taskEditView, AvaloniaPropertyChangedEventArgs avaloniaPropertyChangedEventArgs)
+    {
+        if (avaloniaPropertyChangedEventArgs.NewValue is true)
+        {
+            // TitleTextBox may not be loaded. Dispatch after layout.
+            Dispatcher.UIThread.Post(() => taskEditView.TitleTextBox.Focus(), DispatcherPriority.Loaded);
+        }
+    }
+    
     private void TitleTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
     {
         if (DataContext is null) return;
@@ -36,12 +51,5 @@ public partial class TaskEditView : UserControl
     {
         get => GetValue(SaveCommandProperty);
         set => SetValue(SaveCommandProperty, value);
-    }
-
-    private void StyledElement_OnDataContextChanged(object? sender, EventArgs e)
-    {
-        if(DataContext is null) return;
-
-        TitleTextBox.Focus();
     }
 }

@@ -9,6 +9,5 @@
              >
     <TextBox x:Name="TitleTextBox" Text="{Binding Title}" LostFocus="TitleTextBox_OnLostFocus"
              KeyDown="TitleTextBox_OnKeyDown" HorizontalAlignment="Stretch" Padding="4"
-             DataContextChanged="StyledElement_OnDataContextChanged"
              VerticalContentAlignment="Center"/>
 </UserControl>
