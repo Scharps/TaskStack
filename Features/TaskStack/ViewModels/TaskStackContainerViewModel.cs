@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -7,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using TaskStack.Data;
+using TaskStack.Features.TaskStack.Models;
 using TaskStack.Messages;
 
 namespace TaskStack.Features.TaskStack.ViewModels;
@@ -28,7 +30,7 @@ public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<
     {
         try
         {
-            var task = await _context.Tasks.SingleOrDefaultAsync(task => task.Id == message.Value);
+            var task = await _context.Tasks.Include(taskEntity => taskEntity.Tasks).SingleOrDefaultAsync(task => task.Id == message.Value);
 
             SelectedTaskStack = task switch
             {
@@ -36,7 +38,11 @@ public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<
                 {
                     TaskId = task.Id,
                     Title = task.Title,
-                    Tasks = new ObservableCollection<string>(task.Tasks)
+                    Tasks = new ObservableCollection<TaskStep>(task.Tasks.OrderByDescending(t => t.Created).Select(t => new TaskStep()
+                    {
+                        Id = t.Id,
+                        Step = t.Step
+                    }))
                 },
                 _ => null,
             };

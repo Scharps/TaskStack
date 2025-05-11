@@ -6,6 +6,31 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="viewModels:TaskStackViewModel"
              x:Class="TaskStack.Features.TaskStack.Views.TaskStackView">
-    <Grid RowDefinitions="50, *">
+    <Grid RowDefinitions="50, Auto, *" Margin="32"
+          IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
+        <Grid ColumnDefinitions="*, *" Margin="0,0,0,5">
+            <TextBox Text="{Binding NewStep}" FontSize="26">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="KeyDown">
+                        <InvokeCommandAction PassEventArgsToCommand="True" Command="{Binding NewStepKeyDownCommand}" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+            </TextBox>
+            <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="26" Command="{Binding PopTaskStepCommand}"
+                    HorizontalContentAlignment="Center">
+                Pop!
+            </Button>
+        </Grid>
+        <ScrollViewer Grid.Row="2">
+            <ItemsControl ItemsSource="{Binding Tasks}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Red" Height="50" Margin="0,0,0,3">
+                            <TextBlock Background="Crimson" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Stretch" FontSize="34" Text="{Binding Step}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

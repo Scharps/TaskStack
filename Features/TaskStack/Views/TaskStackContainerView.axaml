@@ -8,19 +8,22 @@
              x:DataType="viewModels:TaskStackContainerViewModel"
              x:Class="TaskStack.Features.TaskStack.Views.TaskStackContainerView">
     <Grid RowDefinitions="50, *">
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Left" FontSize="24" FontWeight="Bold" Padding="12,0" VerticalAlignment="Center"
-                       Text="{Binding SelectedTaskStack.Title, FallbackValue='No Task Selected'}" />
-            <Button DockPanel.Dock="Left"
-                    IsEnabled="{Binding SelectedTaskStack, Converter={x:Static ObjectConverters.IsNotNull}}">
-                Edit
-            </Button>
-            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Padding="12,0"
+        <Panel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock DockPanel.Dock="Left" FontSize="24" FontWeight="Bold" Margin="12,0" VerticalAlignment="Center"
+                           Text="{Binding SelectedTaskStack.Title, FallbackValue='No Task Selected'}" />
+                <Button DockPanel.Dock="Left"
+                        IsEnabled="{Binding SelectedTaskStack, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    Edit
+                </Button>
+            </StackPanel>
+            <Button HorizontalAlignment="Right"
+                    Margin="0,0,12,0"
                     IsEnabled="{Binding SelectedTaskStack, Converter={x:Static ObjectConverters.IsNotNull}}"
                     Command="{Binding DeleteTaskCommand}">
                 Delete
             </Button>
-        </DockPanel>
+        </Panel>
         <views:TaskStackView Grid.Row="1" DataContext="{Binding SelectedTaskStack}" />
     </Grid>
 </UserControl>

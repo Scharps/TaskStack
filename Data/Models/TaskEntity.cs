@@ -13,5 +13,5 @@ public class TaskEntity
 
     public required DateTime Created { get; set; }
 
-    public ICollection<string> Tasks { get; set; } = [];
+    public ICollection<TaskStepEntity> Tasks { get; set; } = [];
 }

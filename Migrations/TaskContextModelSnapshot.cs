@@ -26,10 +26,6 @@ namespace TaskStack.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
-                    b.PrimitiveCollection<string>("Tasks")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -38,6 +34,45 @@ namespace TaskStack.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tasks");
+                });
+
+            modelBuilder.Entity("TaskStack.Data.Models.TaskStepEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("Completed")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Step")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TaskEntityId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskEntityId");
+
+                    b.ToTable("TaskStepEntity");
+                });
+
+            modelBuilder.Entity("TaskStack.Data.Models.TaskStepEntity", b =>
+                {
+                    b.HasOne("TaskStack.Data.Models.TaskEntity", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("TaskEntityId");
+                });
+
+            modelBuilder.Entity("TaskStack.Data.Models.TaskEntity", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

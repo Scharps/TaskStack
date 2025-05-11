@@ -19,8 +19,8 @@
     </Design.DataContext>
 
     <Grid ColumnDefinitions="200, *">
-        <views:TaskQueueView />
         <taskStack:TaskStackContainerView Grid.Column="1" />
+        <views:TaskQueueView Grid.Column="0" />
     </Grid>
 
 </Window>

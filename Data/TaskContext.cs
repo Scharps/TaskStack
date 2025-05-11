@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using TaskStack.Data.Models;
 
@@ -8,7 +9,12 @@ public class TaskContext : DbContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = string.Join(@"\", "Data Source = " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"TaskStack\TaskStack.db");
+        var dbFileDirectory = string.Join(@"\", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"TaskStack");
+        if (Directory.Exists(dbFileDirectory) == false)
+        {
+            Directory.CreateDirectory(dbFileDirectory);
+        }
+        var connectionString = string.Join(@"\", "Data Source =" + dbFileDirectory, "TaskStack.db");
         optionsBuilder.UseSqlite(connectionString);
     }
 
