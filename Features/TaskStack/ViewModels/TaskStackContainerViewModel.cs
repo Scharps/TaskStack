@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using TaskStack.Data;
@@ -27,17 +28,34 @@ public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<
     {
         try
         {
-            var task = await _context.Tasks.SingleAsync(task => task.Id == message.Value);
-            SelectedTaskStack = new TaskStackViewModel(_context)
+            var task = await _context.Tasks.SingleOrDefaultAsync(task => task.Id == message.Value);
+
+            SelectedTaskStack = task switch
             {
-                TaskId = task.Id,
-                Title = task.Title,
-                Tasks = new ObservableCollection<string>(task.Tasks)
+                not null => new TaskStackViewModel(_context)
+                {
+                    TaskId = task.Id,
+                    Title = task.Title,
+                    Tasks = new ObservableCollection<string>(task.Tasks)
+                },
+                _ => null,
             };
         }
         catch (Exception e)
         {
             throw; // TODO handle exception
+        }
+    }
+    
+    [RelayCommand]
+    private async Task DeleteTaskAsync()
+    {
+        var taskEntity = await _context.Tasks.FindAsync(SelectedTaskStack!.TaskId);
+        if (taskEntity is null) return;
+        _context.Tasks.Remove(taskEntity);
+        if (await _context.SaveChangesAsync() > 0)
+        {
+            WeakReferenceMessenger.Default.Send(new TaskDeletedMessage(SelectedTaskStack.TaskId));
         }
     }
 }

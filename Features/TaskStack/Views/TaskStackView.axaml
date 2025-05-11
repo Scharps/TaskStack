@@ -7,10 +7,5 @@
              x:DataType="viewModels:TaskStackViewModel"
              x:Class="TaskStack.Features.TaskStack.Views.TaskStackView">
     <Grid RowDefinitions="50, *">
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Left" FontSize="24" FontWeight="Bold" Padding="12,0" VerticalAlignment="Center" Text="{Binding Title}"/>
-            <Button DockPanel.Dock="Left">Edit</Button>
-            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Padding="12,0" Command="{Binding DeleteTaskCommand}">Delete</Button>
-        </DockPanel>
     </Grid>
 </UserControl>

@@ -12,7 +12,7 @@ using TaskStack.Messages;
 
 namespace TaskStack.Features.TaskQueue.ViewModels;
 
-public partial class TaskQueueViewModel : ObservableObject
+public partial class TaskQueueViewModel : ObservableObject, IRecipient<TaskDeletedMessage>
 {
     private readonly TaskContext _context = Ioc.Default.GetRequiredService<TaskContext>();
 
@@ -24,6 +24,7 @@ public partial class TaskQueueViewModel : ObservableObject
 
     public TaskQueueViewModel()
     {
+        WeakReferenceMessenger.Default.Register(this);
         _tasks = new ObservableCollection<TaskViewModel>(
             _context.Tasks
                 .OrderByDescending(t => t.Created)
@@ -39,7 +40,11 @@ public partial class TaskQueueViewModel : ObservableObject
     partial void OnSelectedTaskChanged(TaskViewModel? value)
     {
         // User entering space on the edit causes selection to change. Check initialization to be sure.
-        if (value is not { Initialised: true }) return;
+        if (value is not { Initialised: true })
+        {
+            WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(null));
+            return;
+        }
         
         WeakReferenceMessenger.Default.Send(new TaskSelectedMessage(value!.Id));
     }
@@ -83,5 +88,14 @@ public partial class TaskQueueViewModel : ObservableObject
 
         task.Id = taskEntity.Id;
         task.Initialised = true;
+    }
+
+    public void Receive(TaskDeletedMessage message)
+    {
+        var task = Tasks.SingleOrDefault(task => task.Id == message.Value);
+
+        if (task is null) return;
+
+        Tasks.Remove(task);
     }
 }

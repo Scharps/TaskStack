@@ -2,4 +2,4 @@
 
 namespace TaskStack.Messages;
 
-public class TaskSelectedMessage(int? id) : ValueChangedMessage<int?>(id);
+public class TaskDeletedMessage(int value) : ValueChangedMessage<int>(value);

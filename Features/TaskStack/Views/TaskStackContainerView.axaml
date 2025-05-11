@@ -7,5 +7,12 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="viewModels:TaskStackContainerViewModel"
              x:Class="TaskStack.Features.TaskStack.Views.TaskStackContainerView">
-    <views:TaskStackView DataContext="{Binding SelectedTaskStack}" />
+    <Grid RowDefinitions="50, *">
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Left" FontSize="24" FontWeight="Bold" Padding="12,0" VerticalAlignment="Center" Text="{Binding SelectedTaskStack.Title, FallbackValue='No Task Selected'}"/>
+            <Button DockPanel.Dock="Left">Edit</Button>
+            <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Padding="12,0" Command="{Binding DeleteTaskCommand}">Delete</Button>
+        </DockPanel>
+        <views:TaskStackView Grid.Row="1" DataContext="{Binding SelectedTaskStack}" />
+    </Grid>
 </UserControl>
