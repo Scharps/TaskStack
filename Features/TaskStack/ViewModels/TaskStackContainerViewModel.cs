@@ -16,21 +16,21 @@ namespace TaskStack.Features.TaskStack.ViewModels;
 public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<TaskSelectedMessage>
 {
     private readonly TaskContext _context;
-    
-    [ObservableProperty]
-    private TaskStackViewModel? _selectedTaskStack;
-    
+
+    [ObservableProperty] private TaskStackViewModel? _selectedTaskStack;
+
     public TaskStackContainerViewModel()
     {
         WeakReferenceMessenger.Default.Register(this);
         _context = Ioc.Default.GetRequiredService<TaskContext>();
     }
-    
+
     public async void Receive(TaskSelectedMessage message)
     {
         try
         {
-            var task = await _context.Tasks.Include(taskEntity => taskEntity.Tasks).SingleOrDefaultAsync(task => task.Id == message.Value);
+            var task = await _context.Tasks.Include(taskEntity => taskEntity.Tasks)
+                .SingleOrDefaultAsync(task => task.Id == message.Value);
 
             SelectedTaskStack = task switch
             {
@@ -38,11 +38,12 @@ public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<
                 {
                     TaskId = task.Id,
                     Title = task.Title,
-                    Tasks = new ObservableCollection<TaskStep>(task.Tasks.OrderByDescending(t => t.Created).Select(t => new TaskStep()
-                    {
-                        Id = t.Id,
-                        Step = t.Step
-                    }))
+                    Tasks = new ObservableCollection<TaskStep>(task.Tasks.Where(t => t.Completed == null)
+                        .OrderByDescending(t => t.Created).Select(t => new TaskStep()
+                        {
+                            Id = t.Id,
+                            Step = t.Step
+                        }))
                 },
                 _ => null,
             };
@@ -52,7 +53,7 @@ public partial class TaskStackContainerViewModel : ObservableObject, IRecipient<
             throw; // TODO handle exception
         }
     }
-    
+
     [RelayCommand]
     private async Task DeleteTaskAsync()
     {

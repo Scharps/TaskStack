@@ -55,7 +55,10 @@ public partial class TaskStackViewModel(TaskContext context) : ObservableObject
         if(Tasks.Count == 0) return;
 
         var task = await context.Tasks.Include(t => t.Tasks).SingleAsync(task => task.Id == TaskId);
-        task.Tasks.OrderByDescending(t => t.Created).First().Completed = DateTime.UtcNow;
+        var topStackStep = task.Tasks.Where(t => t.Completed == null).OrderByDescending(t => t.Created).First();
+        topStackStep.Completed = DateTime.UtcNow;
+        
+        context.Entry(topStackStep).State = EntityState.Modified;
         await context.SaveChangesAsync();
         
         Tasks.RemoveAt(0);

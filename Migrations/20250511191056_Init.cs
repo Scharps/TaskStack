@@ -31,25 +31,26 @@ namespace TaskStack.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    TaskId = table.Column<int>(type: "INTEGER", nullable: false),
                     Step = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Completed = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    TaskEntityId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Completed = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskStepEntity", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TaskStepEntity_Tasks_TaskEntityId",
-                        column: x => x.TaskEntityId,
+                        name: "FK_TaskStepEntity_Tasks_TaskId",
+                        column: x => x.TaskId,
                         principalTable: "Tasks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskStepEntity_TaskEntityId",
+                name: "IX_TaskStepEntity_TaskId",
                 table: "TaskStepEntity",
-                column: "TaskEntityId");
+                column: "TaskId");
         }
 
         /// <inheritdoc />

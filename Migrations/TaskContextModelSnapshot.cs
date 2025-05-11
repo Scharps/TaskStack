@@ -53,21 +53,25 @@ namespace TaskStack.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("TaskEntityId")
+                    b.Property<int>("TaskId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TaskEntityId");
+                    b.HasIndex("TaskId");
 
                     b.ToTable("TaskStepEntity");
                 });
 
             modelBuilder.Entity("TaskStack.Data.Models.TaskStepEntity", b =>
                 {
-                    b.HasOne("TaskStack.Data.Models.TaskEntity", null)
+                    b.HasOne("TaskStack.Data.Models.TaskEntity", "Task")
                         .WithMany("Tasks")
-                        .HasForeignKey("TaskEntityId");
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("TaskStack.Data.Models.TaskEntity", b =>

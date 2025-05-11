@@ -18,5 +18,14 @@ public class TaskContext : DbContext
         optionsBuilder.UseSqlite(connectionString);
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<TaskEntity>()
+            .HasMany(t => t.Tasks)
+            .WithOne(s => s.Task);
+    }
+
     public DbSet<TaskEntity> Tasks { get; set; }
 }

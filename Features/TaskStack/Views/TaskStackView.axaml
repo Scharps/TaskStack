@@ -8,7 +8,7 @@
              x:Class="TaskStack.Features.TaskStack.Views.TaskStackView">
     <Grid RowDefinitions="50, Auto, *" Margin="32"
           IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}">
-        <Grid ColumnDefinitions="*, *" Margin="0,0,0,5">
+        <Grid ColumnDefinitions="*, 200" Margin="0,0,0,5">
             <TextBox Text="{Binding NewStep}" FontSize="26">
                 <Interaction.Behaviors>
                     <EventTriggerBehavior EventName="KeyDown">
@@ -16,7 +16,7 @@
                     </EventTriggerBehavior>
                 </Interaction.Behaviors>
             </TextBox>
-            <Button Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="26" Command="{Binding PopTaskStepCommand}"
+            <Button Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="26" Command="{Binding PopTaskStepCommand}"
                     HorizontalContentAlignment="Center">
                 Pop!
             </Button>
