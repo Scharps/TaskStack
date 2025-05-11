@@ -1,0 +1,40 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:TaskStack.Features.TaskQueue.ViewModels"
+             xmlns:views="clr-namespace:TaskStack.Features.TaskQueue.Views"
+             xmlns:templateSelectors="clr-namespace:TaskStack.Features.TaskQueue.TemplateSelectors"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TaskStack.Features.TaskQueue.Views.TaskQueueView"
+             x:DataType="viewModels:TaskQueueViewModel">
+    <UserControl.DataContext>
+        <viewModels:TaskQueueViewModel />
+    </UserControl.DataContext>
+    <Grid RowDefinitions="50, *">
+        <Button
+            Content="Add"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Command="{Binding AddTaskCommand}" />
+        <ListBox SelectionMode="AlwaysSelected" Grid.Row="1" SelectedItem="{Binding SelectedTask}" ItemsSource="{Binding Tasks}">
+            <ListBox.ItemTemplate>
+                <templateSelectors:TaskTemplateSelector>
+                    <templateSelectors:TaskTemplateSelector.DefaultTemplate>
+                        <DataTemplate DataType="viewModels:TaskViewModel">
+                            <views:TaskView DataContext="{Binding}" />
+                        </DataTemplate>
+                    </templateSelectors:TaskTemplateSelector.DefaultTemplate>
+                    <templateSelectors:TaskTemplateSelector.EditTemplate>
+                        <DataTemplate DataType="viewModels:TaskViewModel">
+                            <views:TaskEditView DataContext="{Binding}"
+                                                SaveCommand="{Binding $parent[views:TaskQueueView].((viewModels:TaskQueueViewModel)DataContext).TaskInitialisedCommand, FallbackValue={x:Null}}" />
+                        </DataTemplate>
+                    </templateSelectors:TaskTemplateSelector.EditTemplate>
+                </templateSelectors:TaskTemplateSelector>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>
