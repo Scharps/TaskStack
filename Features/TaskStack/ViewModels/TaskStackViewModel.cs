@@ -4,7 +4,7 @@ using TaskStack.Data;
 
 namespace TaskStack.Features.TaskStack.ViewModels;
 
-public partial class TaskStackViewModel(TaskContext context) : ObservableObject
+public partial class TaskStackViewModel(TaskContext? context = null) : ObservableObject
 {
     [ObservableProperty] private ObservableCollection<string> _tasks = [];
     [ObservableProperty] private string _title = string.Empty;

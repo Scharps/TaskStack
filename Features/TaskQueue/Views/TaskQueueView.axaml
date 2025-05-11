@@ -4,13 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:TaskStack.Features.TaskQueue.ViewModels"
              xmlns:views="clr-namespace:TaskStack.Features.TaskQueue.Views"
-             xmlns:templateSelectors="clr-namespace:TaskStack.Features.TaskQueue.TemplateSelectors"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TaskStack.Features.TaskQueue.Views.TaskQueueView"
              x:DataType="viewModels:TaskQueueViewModel">
-    <UserControl.DataContext>
-        <viewModels:TaskQueueViewModel />
-    </UserControl.DataContext>
     <Grid RowDefinitions="50, Auto, *">
         <Button
             Content="Add"
