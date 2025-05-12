@@ -25,8 +25,8 @@
             <ItemsControl ItemsSource="{Binding Tasks}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Red" Height="50" Margin="0,0,0,3">
-                            <TextBlock Background="Crimson" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Stretch" FontSize="34" Text="{Binding Step}" />
+                        <Border BorderBrush="Red" Height="50" Margin="0,0,0,3" Background="Crimson">
+                            <TextBlock HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" FontSize="18" Text="{Binding Step}" />
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
