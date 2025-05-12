@@ -46,6 +46,7 @@ public partial class TaskStackViewModel(TaskContext context) : ObservableObject
             Step = taskStepEntity.Step,
         });
         
+        NewStep = string.Empty;
         PopTaskStepCommand.NotifyCanExecuteChanged();
     }
 
